@@ -1,34 +1,38 @@
-Feature: Check Login page
-  Background: Go to the login page
-    Given I am on the login page
+Feature: Login Functionality
+    Background: Go to the login page
+        Given User am on the login page
 
-  Scenario: Verify UI the login page
-    Then I see the login label is Login into your account
-    And  I see the email address and password textbox are displayed
-    And I see the a Login button has value which is LOGIN
-    And Forgot Password hyperlink with value is Forgot password?
-
-  Scenario Outline: Verify the Login validation
-    When I input <username> and <password> of account
-    And I click on Login button
-    Then I should see a validation message which is This field is required
+    Scenario Outline: Verify successful login with valid credentials.
+        When User log in with <username> and <password>
+        Then User log in successfully
 
     Examples:
-      | username          | password   |
-      |                   | hello12345 |
-      | test123@gmail.com |            |
-      |                   |            |
+        | username                   | password       |
+        | normal account             | valid password |
+        | problem account            | valid password |
+        | performance glitch account | valid password |
 
-  Scenario: Verify the Forgot Password hyperlink
-    When I click on the Forgot Password hyperlink
-    Then I see the Forgot Password page is displayed
 
-  Scenario Outline: Verify logic Login function
-    When I input <username> and <password> of account
-    And I click on Login button
-    Then I should see a error message which is <message>
+    Scenario Outline: Verify unsuccessful login with invalid credentials.
+        When User log in with <username> and <password>
+        Then User log in unsuccessfully and <message> display
 
     Examples:
-      | username          | password   | message                                                         |
-      | test123@gmail.com | hello12346 | Either email address or password is incorrect. Please try again |
-      | test124@gmail.com | hello12345 | Either email address or password is incorrect. Please try again |
+        | username       | password       | message                                             |
+        | locked account | valid password | Epic sadface: Sorry, this user has been locked out. |
+
+
+    Scenario Outline: Verify error message displayed for incorrect login attempts.
+        When User log in with <username> and <password>
+        Then The error message is displayed with content is <message>
+
+    Examples:
+        | username        | password         | message                                                                   |
+        | blank           | blank            | Epic sadface: Username is required                                        |
+        | blank           | valid password   | Epic sadface: Username is required                                        |
+        | normal account  | blank            | Epic sadface: Password is required                                        |
+        | invalid account | invalid password | Epic sadface: Username and password do not match any user in this service |
+        | invalid account | valid password   | Epic sadface: Username and password do not match any user in this service |
+        | normal account  | invalid password | Epic sadface: Username and password do not match any user in this service |
+
+

@@ -1,53 +1,46 @@
-import { Given, When, Then, BeforeStep } from '@wdio/cucumber-framework';
+import { Given, When, Then } from '@wdio/cucumber-framework';
 
-import LoginPage from '../pageobjects/login.page.js';
+import LoginPage from '../page-objects/login.page.js';
+import HomePage from '../page-objects/home.page.js';
 
-const pages = {
-    login: LoginPage,
+//global variable, username of account
+const usernames = {
+    "normal account": "standard_user",
+    "invalid account": "invalid-username",
+    "locked account": "locked_out_user",
+    "problem account": "problem_user",
+    "performance glitch account": "performance_glitch_user",
+    blank: ""
 }
 
-BeforeStep(() => {
-    console.log('Before Step');
-})
+//global variable, password of account
+const passwords = {
+    "valid password": "secret_sauce",
+    "invalid password": "invalid-password",
+    blank: ""
+}
 
-Given(/^I am on the login page$/, async () => {
+
+Given(/^User am on the login page$/, async () => {
     await LoginPage.open()
+    await LoginPage.maximunWindow()
 });
 
-When(/^I input (.*) and (.*) of account$/, async (username, password) => {
-    await LoginPage.inputAccount(username,password)
-});
-
-When(/^I click on Login button$/, async () => {
+When(/^User log in with (.*) and (.*)$/, async (username, password) => {
+    await LoginPage.inputAccount(usernames[username], passwords[password])
     await LoginPage.clickOnLoginBtn()
 });
 
-When(/^I click on the Forgot Password hyperlink$/, async () => {
-    await LoginPage.hplForgotPassword.click()
-});
+Then(/^User log in successfully$/, async () => {
+    await expect(HomePage.lbTitle).toBeDisplayed()
+})
 
-Then(/^I see the login label is (.*)$/, async (value) => {
-    await expect(LoginPage.pageTitle).toHaveText(value)
-});
+Then(/^User log in unsuccessfully and (.*) display$/, async (message) => {
+    await expect(LoginPage.lbErrorMessage).toHaveText(message)
+})
 
-Then(/^I see the email address and password textbox are displayed$/, async () => {
-    await expect(LoginPage.tbUsername).toBeDisplayed()
-    await expect(LoginPage.tbPassword).toBeDisplayed()
-});
-
-Then(/^I see the a Login button has value which is (.*)$/, async (value) => {
-    await expect(LoginPage.btnSubmit).toHaveText(value)
-});
-
-Then(/^Forgot Password hyperlink with value is (.*)$/, async (value) => {
-    await expect(LoginPage.hplForgotPassword).toHaveText(value)
-});
-
-Then(/^I should see a validation message which is (.*)$/, async (value) => {
-    await expect(LoginPage.validateMessage).toHaveText(value)
-});
+Then(/^The error message is displayed with content is (.*)$/, async (message) => {
+    await expect(LoginPage.lbErrorMessage).toHaveText(message)
+})
 
 
-Then(/^I should see a error message which is (.*)$/, async (value) => {
-    await expect(LoginPage.errorMessage).toBeDisplayed()
-});
