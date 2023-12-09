@@ -1,0 +1,23 @@
+{
+  "name": "my-new-project",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/allure-reporter": "^8.10.4",
+    "@wdio/cli": "^8.10.5",
+    "@wdio/cucumber-framework": "^8.10.4",
+    "@wdio/local-runner": "^8.10.5",
+    "@wdio/spec-reporter": "^8.10.5",
+    "chromedriver": "^115.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "wdio-chromedriver-service": "^8.1.1"
+  },
+  "scripts": {
+    "wdio": "wdio run ./wdio.conf.ts",
+    "wdio-auth": "wdio run ./wdio.conf.ts --suite auth",
+    "wdio-home": "wdio run ./wdio.conf.ts --suite home"
+  },
+  "dependencies": {
+    "allure-commandline": "^2.22.1"
+  }
+}
